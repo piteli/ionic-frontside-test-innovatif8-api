@@ -1,5 +1,7 @@
 {
   "name": "okayID",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

@@ -7,14 +7,148 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div *ngIf="platformDevice == 'mobile'">
+  <ion-slides #slides>
+    <ion-slide>
+      <div id="container">
+        <strong>Upload to okayID</strong>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
+              <ion-button (click)="loadCamera('FRONT','IC')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
+            </ion-col>
+            <ion-col>
+              <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + backImageURI" />
+              <ion-button (click)="loadCamera('BACK', 'IC')">{{backImageURI == null ? "upload back IC" : 'Back IC Uploaded'}}</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button (click)="callOkayIDCentralizedAPI()" [disabled]="backImageURI == null || frontImageURI == null">Upload to the API</ion-button>
+            </ion-col>
+          </ion-row>        
+        </ion-grid>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div id="container2">
+        <strong>Upload to okayFace</strong>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
+              <ion-button (click)="loadCamera('FRONT','IC')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
+            </ion-col>
+            <ion-col>
+              <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontFaceImageURI">
+              <ion-button (click)="loadCamera('FRONT', 'SELFIE')">{{frontFaceImageURI == null ? "Upload Selfie" : 'Selfie Uploaded'}}</ion-button>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+              <ion-col>
+                  <ion-button (click)="callOkayFaceCentralizedAPI()" [disabled]="frontFaceImageURI == null || frontImageURI == null">Upload to the API</ion-button>
+              </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div id="container3">
+        <strong>Upload to okayDoc</strong>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI">
+              <ion-button (click)="loadCamera('FRONT', 'IC')">{{frontImageURI == null ? "Upload Front IC" : 'Front IC Uploaded'}}</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-button (click)="callOkayDocCentralizedAPI()" [disabled]="frontFaceImageURI == null">Upload to the API</ion-button>
+      </div>
+    </ion-slide>
+    <ion-slide>
+      <div id="container4" style="word-wrap: break-word;">
+        <strong>Results in Scorecard</strong>
+        <ion-button (click)="getResultsScorecard()">Get results scorecard</ion-button>
+        <p>{{scorecard}}</p>
+      </div>
+    </ion-slide>
+  </ion-slides>
+  </div>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div *ngIf="platformDevice == 'web'">
+    <ion-slides #slides>
+      <ion-slide>
+        <div id="container">
+          <strong>Upload to okayID</strong>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
+                <label for="okayIDFrontImageURI">Upload front IC:</label>
+                <input type="file" id="okayIDFrontImageURI" name="okayIDFrontImageURI" (change)="fileOnChange($event, 'okayIDFrontImageURI')" />
+              </ion-col>
+              <ion-col>
+                <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + backImageURI" />
+                <label for="okayIDBackImageURI">Upload back IC:</label>
+                <input type="file" id="okayIDBackImageURI" name="okayIDBackImageURI" (change)="fileOnChange($event, 'okayIDBackImageURI')" />
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <ion-button (click)="callOkayIDCentralizedAPI()" [disabled]="backImageURI == null || frontImageURI == null">Upload to the API</ion-button>
+              </ion-col>
+            </ion-row>        
+          </ion-grid>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div id="container2">
+          <strong>Upload to okayFace</strong>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
+                <label for="okayFaceFrontImageURI">Upload front IC:</label>
+                <input type="file" id="okayFaceFrontImageURI" name="okayFaceFrontImageURI" (change)="fileOnChange($event, 'okayFaceFrontImageURI')" />
+              </ion-col>
+              <ion-col>
+                <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontFaceImageURI">
+                <label for="okayFaceSelfieImageURI">Upload front IC:</label>
+                <input type="file" id="okayFaceSelfieImageURI" name="okayFaceSelfieImageURI" (change)="fileOnChange($event, 'okayFaceSelfieImageURI')" />
+              </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col>
+                    <ion-button (click)="callOkayFaceCentralizedAPI()" [disabled]="frontFaceImageURI == null || frontImageURI == null">Upload to the API</ion-button>
+                </ion-col>
+            </ion-row>
+          </ion-grid>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div id="container3">
+          <strong>Upload to okayDoc</strong>
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI">
+                <label for="okayDocFrontImageURI">Upload front IC:</label>
+                <input type="file" id="okayDocFrontImageURI" name="okayDocFrontImageURI" (change)="fileOnChange($event, 'okayDocFrontImageURI')" />
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ion-button (click)="callOkayDocCentralizedAPI()" [disabled]="frontFaceImageURI == null">Upload to the API</ion-button>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div id="container4" style="word-wrap: break-word;">
+          <strong>Results in Scorecard</strong>
+          <ion-button (click)="getResultsScorecard()">Get results scorecard</ion-button>
+          <p>{{scorecard}}</p>
+        </div>
+      </ion-slide>
+    </ion-slides>
   </div>
 </ion-content>
