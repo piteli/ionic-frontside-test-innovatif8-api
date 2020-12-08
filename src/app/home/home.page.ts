@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { ViewChild } from '@angular/core';
-import { IonSlides, LoadingController, AlertController, Platform } from '@ionic/angular';
+import { IonSlides, LoadingController, AlertController, Platform, ActionSheetController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import * as $ from 'jquery';
 
@@ -30,7 +30,8 @@ export class HomePage {
                 public loadingController: LoadingController,
                 private alertController : AlertController,
                 private domSanitizer: DomSanitizer,
-                private platform : Platform) {
+                private platform : Platform,
+                public actionSheetController: ActionSheetController) {
     this.loadJourneyID();
     this.platforms = this.platform.platforms();
     if(this.platforms.includes('mobile')) this.platformDevice = 'mobile';
@@ -52,14 +53,40 @@ export class HomePage {
     }, 2000);
   }
 
-  loadCamera(cameraType, imageType){
+promptUploadMedia = async(cameraType, imageType) => {
+    const actionSheet = await this.actionSheetController.create({
+        header: 'Select Upload Type',
+        cssClass: 'my-custom-class',
+        buttons: [{
+          text: 'Using Camera',
+          handler: () => {
+            this.loadCamera(cameraType, imageType, this.camera.PictureSourceType.CAMERA);
+          }
+        }, {
+          text: 'Upload from Gallery',
+          handler: () => {
+            this.loadCamera(cameraType, imageType, this.camera.PictureSourceType.PHOTOLIBRARY);
+          }
+        },{
+          text: 'Cancel',
+          icon: 'close',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }]
+      });
+      await actionSheet.present();
+  }
+
+  loadCamera(cameraType, imageType, pictureSourceType){
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
       cameraDirection : cameraType === 'BACK' ? this.camera.Direction.BACK : this.camera.Direction.FRONT,
-      sourceType : this.camera.PictureSourceType.PHOTOLIBRARY
+      sourceType : pictureSourceType
     }
 
     this.camera.getPicture(options).then((imageData) => {
@@ -67,8 +94,8 @@ export class HomePage {
       // If it's base64 (DATA_URL):
       let base64Image = imageData;
       console.log(base64Image);
-      if(cameraType === 'FRONT' && imageType === 'IC') this.frontImageURI = base64Image;
-      if(cameraType === 'BACK' && imageType === 'IC') this.backImageURI = base64Image;
+      if(cameraType === 'BACK' && imageType === 'IC_FRONT') this.frontImageURI = base64Image;
+      if(cameraType === 'BACK' && imageType === 'IC_BACK') this.backImageURI = base64Image;
       if(cameraType === 'FRONT' && imageType === 'SELFIE') this.frontFaceImageURI = base64Image;
      }, (err) => {
       // Handle error

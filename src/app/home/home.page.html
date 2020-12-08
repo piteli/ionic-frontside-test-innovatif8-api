@@ -16,11 +16,11 @@
           <ion-row>
             <ion-col>
               <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
-              <ion-button (click)="loadCamera('FRONT','IC')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
+              <ion-button (click)="promptUploadMedia('BACK','IC_FRONT')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
             </ion-col>
             <ion-col>
               <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + backImageURI" />
-              <ion-button (click)="loadCamera('BACK', 'IC')">{{backImageURI == null ? "upload back IC" : 'Back IC Uploaded'}}</ion-button>
+              <ion-button (click)="promptUploadMedia('BACK', 'IC_BACK')">{{backImageURI == null ? "upload back IC" : 'Back IC Uploaded'}}</ion-button>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -38,11 +38,11 @@
           <ion-row>
             <ion-col>
               <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
-              <ion-button (click)="loadCamera('FRONT','IC')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
+              <ion-button (click)="promptUploadMedia('BACK','IC_FRONT')">{{frontImageURI == null ? "Upload front IC" : 'Front IC Uploaded'}}</ion-button>
             </ion-col>
             <ion-col>
               <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontFaceImageURI">
-              <ion-button (click)="loadCamera('FRONT', 'SELFIE')">{{frontFaceImageURI == null ? "Upload Selfie" : 'Selfie Uploaded'}}</ion-button>
+              <ion-button (click)="promptUploadMedia('FRONT', 'SELFIE')">{{frontFaceImageURI == null ? "Upload Selfie" : 'Selfie Uploaded'}}</ion-button>
             </ion-col>
           </ion-row>
           <ion-row>
@@ -60,7 +60,7 @@
           <ion-row>
             <ion-col>
               <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI">
-              <ion-button (click)="loadCamera('FRONT', 'IC')">{{frontImageURI == null ? "Upload Front IC" : 'Front IC Uploaded'}}</ion-button>
+              <ion-button (click)="promptUploadMedia('BACK', 'IC_FRONT')">{{frontImageURI == null ? "Upload Front IC" : 'Front IC Uploaded'}}</ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
