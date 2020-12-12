@@ -3,7 +3,10 @@ import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { ViewChild } from '@angular/core';
 import { IonSlides, LoadingController, AlertController, Platform, ActionSheetController } from '@ionic/angular';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Subject, Observable } from 'rxjs';
 import * as $ from 'jquery';
+import { ModalController } from '@ionic/angular';
+import { ModalWebcamComponent } from '../modal-webcam/modal-webcam.component';
 
 const BASE_URL = "https://test-gist.herokuapp.com";
 
@@ -25,16 +28,20 @@ export class HomePage {
   scorecard : string = null;
   platforms : any;
   platformDevice: any = 'mobile';
+  webcamEnabled : boolean = false;
+  keyHolder : string = "";
+  private trigger: Subject<void> = new Subject<void>();
 
   constructor(private camera: Camera, 
                 public loadingController: LoadingController,
                 private alertController : AlertController,
                 private domSanitizer: DomSanitizer,
                 private platform : Platform,
-                public actionSheetController: ActionSheetController) {
+                public actionSheetController: ActionSheetController,
+                public modalController: ModalController) {
     this.loadJourneyID();
     this.platforms = this.platform.platforms();
-    if(this.platforms.includes('mobile')) this.platformDevice = 'mobile';
+    if(this.platforms.includes('iphone') || this.platforms.includes('android')) this.platformDevice = 'mobile';
     else this.platformDevice = 'web';
   }
 
@@ -105,6 +112,7 @@ promptUploadMedia = async(cameraType, imageType) => {
 
   callOkayIDCentralizedAPI = async() => {
     this.presentLoading();
+    this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/id`, {
       method : 'POST',
       body : JSON.stringify(
@@ -248,6 +256,28 @@ fileOnChange = (event, type) => {
                 console.log('none');
         }
     })
+}
+
+openModalWebcam(key){
+    this.keyHolder = key;
+    this.webcamEnabled = true;
+}
+
+closeModalWebcam(){
+    this.webcamEnabled = false;
+}
+
+handleImage(event){
+
+}
+
+public get triggerObservable(): Observable<void> {
+    return this.trigger.asObservable();
+}
+
+captureUsingWebcam(){
+    this.trigger.next();
+    this.closeModalWebcam();
 }
 
   okayIDCentralizedAPISampleResponse = () => {

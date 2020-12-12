@@ -78,6 +78,10 @@
   </div>
 
   <div *ngIf="platformDevice == 'web'">
+    <div *ngIf="webcamEnabled" class="camera" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <webcam [height]="500" [width]="500" (imageCapture)="handleImage($event)"></webcam>
+        <ion-button (click)="captureUsingWebcam();">Capture</ion-button>
+    </div>
     <ion-slides #slides>
       <ion-slide>
         <div id="container">
@@ -88,11 +92,13 @@
                 <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
                 <label for="okayIDFrontImageURI">Upload front IC:</label>
                 <input type="file" id="okayIDFrontImageURI" name="okayIDFrontImageURI" (change)="fileOnChange($event, 'okayIDFrontImageURI')" />
+                <ion-button (click)="openModalWebcam('okayIDFrontImageURI')">Capture using Webcam</ion-button>
               </ion-col>
               <ion-col>
                 <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + backImageURI" />
                 <label for="okayIDBackImageURI">Upload back IC:</label>
                 <input type="file" id="okayIDBackImageURI" name="okayIDBackImageURI" (change)="fileOnChange($event, 'okayIDBackImageURI')" />
+                <ion-button (click)="openModalWebcam('okayIDBackImageURI')">Capture using Webcam</ion-button>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -112,11 +118,13 @@
                 <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI" />
                 <label for="okayFaceFrontImageURI">Upload front IC:</label>
                 <input type="file" id="okayFaceFrontImageURI" name="okayFaceFrontImageURI" (change)="fileOnChange($event, 'okayFaceFrontImageURI')" />
+                <ion-button (click)="openModalWebcam('okayFaceFrontImageURI')">Capture using Webcam</ion-button>
               </ion-col>
               <ion-col>
                 <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontFaceImageURI">
                 <label for="okayFaceSelfieImageURI">Upload front IC:</label>
                 <input type="file" id="okayFaceSelfieImageURI" name="okayFaceSelfieImageURI" (change)="fileOnChange($event, 'okayFaceSelfieImageURI')" />
+                <ion-button (click)="openModalWebcam('okayFaceSelfieImageURI')">Capture using Webcam</ion-button>
               </ion-col>
             </ion-row>
             <ion-row>
@@ -136,6 +144,7 @@
                 <img style="height : 100px;width : 100px;" [src]="'data:image/jpeg;base64,' + frontImageURI">
                 <label for="okayDocFrontImageURI">Upload front IC:</label>
                 <input type="file" id="okayDocFrontImageURI" name="okayDocFrontImageURI" (change)="fileOnChange($event, 'okayDocFrontImageURI')" />
+                <ion-button (click)="openModalWebcam('okayDocFrontImageURI')">Capture using Webcam</ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
