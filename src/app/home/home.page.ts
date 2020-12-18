@@ -86,14 +86,15 @@ promptUploadMedia = async(cameraType, imageType) => {
       await actionSheet.present();
   }
 
-  loadCamera(cameraType, imageType, pictureSourceType){
+  loadCamera = (cameraType, imageType, pictureSourceType) => {
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
       cameraDirection : cameraType === 'BACK' ? this.camera.Direction.BACK : this.camera.Direction.FRONT,
-      sourceType : pictureSourceType
+      sourceType : pictureSourceType,
+      correctOrientation : true
     }
 
     this.camera.getPicture(options).then((imageData) => {
