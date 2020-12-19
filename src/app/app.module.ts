@@ -10,9 +10,10 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { Camera } from '@ionic-native/camera/ngx';
 import {WebcamModule} from 'ngx-webcam';
+import { ModalWebcamComponent } from './modal-webcam/modal-webcam.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ModalWebcamComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, WebcamModule],
   providers: [
