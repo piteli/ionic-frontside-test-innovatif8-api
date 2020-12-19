@@ -79,7 +79,7 @@
 
   <div *ngIf="platformDevice == 'web'">
     <div *ngIf="webcamEnabled" class="camera" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <webcam [height]="500" [width]="500" (imageCapture)="handleImage($event)"></webcam>
+        <webcam [height]="500" [width]="500" (imageCapture)="handleImage($event)" [trigger]="triggerObservable" (initError)="handleInitError($event)"></webcam>
         <ion-button (click)="captureUsingWebcam();">Capture</ion-button>
     </div>
     <ion-slides #slides>

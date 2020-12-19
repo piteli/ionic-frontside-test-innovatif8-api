@@ -7,6 +7,7 @@ import { Subject, Observable } from 'rxjs';
 import * as $ from 'jquery';
 import { ModalController } from '@ionic/angular';
 import { ModalWebcamComponent } from '../modal-webcam/modal-webcam.component';
+import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 
 const BASE_URL = "https://test-gist.herokuapp.com";
 
@@ -30,7 +31,9 @@ export class HomePage {
   platformDevice: any = 'mobile';
   webcamEnabled : boolean = false;
   keyHolder : string = "";
+  public webcamImage: WebcamImage = null;
   private trigger: Subject<void> = new Subject<void>();
+  private nextWebcam: Subject<boolean|string> = new Subject<boolean|string>();
 
   constructor(private camera: Camera, 
                 public loadingController: LoadingController,
@@ -101,7 +104,6 @@ promptUploadMedia = async(cameraType, imageType) => {
       // imageData is either a base64 encoded string or a file URI
       // If it's base64 (DATA_URL):
       let base64Image = imageData;
-      console.log(base64Image);
       if(cameraType === 'BACK' && imageType === 'IC_FRONT') this.frontImageURI = base64Image;
       if(cameraType === 'BACK' && imageType === 'IC_BACK') this.backImageURI = base64Image;
       if(cameraType === 'FRONT' && imageType === 'SELFIE') this.frontFaceImageURI = base64Image;
@@ -137,6 +139,7 @@ promptUploadMedia = async(cameraType, imageType) => {
 
   callOkayFaceCentralizedAPI = async() => {
     this.presentLoading();
+    this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/face`, {
       method : 'POST',
       body : JSON.stringify(
@@ -158,6 +161,7 @@ promptUploadMedia = async(cameraType, imageType) => {
 
   callOkayDocCentralizedAPI = async() => {
     this.presentLoading();
+    this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/doc`, {
       method : 'POST',
       body : JSON.stringify(
@@ -269,7 +273,13 @@ closeModalWebcam(){
 }
 
 handleImage(event){
-
+    const result = event;
+    const fullbase64 = result._imageAsDataUrl;
+    const array = fullbase64.split(',');
+    const base64 = array[1];
+    if(this.keyHolder === 'okayIDFrontImageURI') this.frontImageURI = base64;
+    if(this.keyHolder === 'okayIDBackImageURI') this.backImageURI = base64;
+    if(this.keyHolder === 'okayFaceSelfieImageURI') this.frontFaceImageURI = base64;
 }
 
 public get triggerObservable(): Observable<void> {
@@ -279,6 +289,11 @@ public get triggerObservable(): Observable<void> {
 captureUsingWebcam(){
     this.trigger.next();
     this.closeModalWebcam();
+}
+
+handleInitError(event){
+    console.log('webcam error here');
+    console.log(event);
 }
 
   okayIDCentralizedAPISampleResponse = () => {
