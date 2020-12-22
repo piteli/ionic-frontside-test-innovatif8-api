@@ -31,16 +31,35 @@ export class AppComponent {
 
   getJourneyID(){
 
+    // fetch('http://www.pnmb.com.my/Kopten/Innovatif8/api/okay/getJourneyId',
+    // {
+    //   method : 'POST',
+    //   body : JSON.stringify({
+    //     username : "pnmb_test",
+    //     password : "Pnmb123@"
+    //   }),
+    //   headers : {
+    //     'Content-Type' : 'application/json'
+    //   }
+    // }).then((res) => res.json()).then((res) => {
+    //   console.log('success');
+    //   console.log(res);
+    // }).catch((err) => {
+    //   console.log('here is an error');
+    //   console.log(err);
+    // })
+
+    this.http.setDataSerializer('json'); 
     this.http.post('http://www.pnmb.com.my/Kopten/Innovatif8/api/okay/getJourneyId',
     {
       username : "pnmb_test",
       password : "Pnmb123@"
     },{
-      'Content-Type' : 'application/json'
+      'Content-Type' : 'application/json',
+      'Accept' : 'application/json'
     }).then((res) => {
-      console.log('here is an result');
-      console.log(res);
-      // localStorage.setItem('journeyId', res.journeyId);
+      const json = JSON.parse(res.data);
+      localStorage.setItem('journeyId', json.journeyId);
     }).catch((err) => {
       console.log('here is an error');
       console.log(err);

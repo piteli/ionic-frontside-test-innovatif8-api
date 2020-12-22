@@ -8,6 +8,7 @@ import * as $ from 'jquery';
 import { ModalController } from '@ionic/angular';
 import { ModalWebcamComponent } from '../modal-webcam/modal-webcam.component';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
+import { HTTP } from '@ionic-native/http/ngx'; 
 
 const BASE_URL = "http://www.pnmb.com.my/Kopten/Innovatif8";
 
@@ -41,7 +42,9 @@ export class HomePage {
                 private domSanitizer: DomSanitizer,
                 private platform : Platform,
                 public actionSheetController: ActionSheetController,
-                public modalController: ModalController) {
+                public modalController: ModalController,
+                private http: HTTP) {
+    this.http.setDataSerializer('json'); 
     this.loadJourneyID();
     this.platforms = this.platform.platforms();
     if(this.platforms.includes('iphone') || this.platforms.includes('android')) this.platformDevice = 'mobile';
@@ -116,24 +119,40 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayIDCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    const response = await fetch(`${BASE_URL}/api/okay/id`, {
-      method : 'POST',
-      mode : 'no-cors',
-      body : JSON.stringify(
-        {
-          "journeyId": this.journeyID,
-          "base64ImageString": this.frontImageURI,
-          "backImage": this.backImageURI,
-          "imageEnabled":false,
-          "faceImageEnabled":false,
-          "cambodia":false
-      }
-      ),
-      headers : {'Content-Type' : 'application/json'}
-    }).then((res) => { return res.json() });
-    if(response == undefined){this.dismissLoading();return;}
-    this.dismissLoading();
-    this.showResults('/api/okay/id', JSON.stringify(response));
+    // const response = await fetch(`${BASE_URL}/api/okay/id`, {
+    //   method : 'POST',
+    //   mode : 'no-cors',
+    //   body : JSON.stringify(
+    //     {
+    //       "journeyId": this.journeyID,
+    //       "base64ImageString": this.frontImageURI,
+    //       "backImage": this.backImageURI,
+    //       "imageEnabled":false,
+    //       "faceImageEnabled":false,
+    //       "cambodia":false
+    //   }
+    //   ),
+    //   headers : {'Content-Type' : 'application/json'}
+    // }).then((res) => { return res.json() });
+
+    this.http.post(`${BASE_URL}/api/okay/id`,
+    {
+        "journeyId": this.journeyID,
+        "base64ImageString": this.frontImageURI,
+        "backImage": this.backImageURI,
+        "imageEnabled":false,
+        "faceImageEnabled":false,
+        "cambodia":false
+    },{
+      'Content-Type' : 'application/json'
+    }).then((res) => {
+        this.dismissLoading();
+        this.showResults('/api/okay/id', res.data);
+    }).catch((err) => {
+      console.log('here is an error');
+      console.log(err);
+      this.dismissLoading();
+    });
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
   }
@@ -141,22 +160,41 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayFaceCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    const response = await fetch(`${BASE_URL}/api/okay/face`, {
-      method : 'POST',
-      mode : 'no-cors',
-      body : JSON.stringify(
-        {
+    // const response = await fetch(`${BASE_URL}/api/okay/face`, {
+    //   method : 'POST',
+    //   mode : 'no-cors',
+    //   body : JSON.stringify(
+    //     {
+    //       "journeyId": this.journeyID,
+    //       "livenessDetection" : "true",
+    //       "imageBestBase64" : this.frontFaceImageURI,
+    //       "imageIdCardBase64" : this.frontImageURI
+    //   }
+    //   ),
+    //   headers : {'Content-Type' : 'application/json'}
+    // }).then((res) => { return res.json() });
+    // if(response == undefined){this.dismissLoading();return;}
+    // this.dismissLoading();
+    // this.showResults('/api/okay/face', JSON.stringify(response));
+
+
+    this.http.post(`${BASE_URL}/api/okay/face`,
+    {
           "journeyId": this.journeyID,
           "livenessDetection" : "true",
           "imageBestBase64" : this.frontFaceImageURI,
           "imageIdCardBase64" : this.frontImageURI
-      }
-      ),
-      headers : {'Content-Type' : 'application/json'}
-    }).then((res) => { return res.json() });
-    if(response == undefined){this.dismissLoading();return;}
-    this.dismissLoading();
-    this.showResults('/api/okay/face', JSON.stringify(response));
+    },{
+      'Content-Type' : 'application/json'
+    }).then((res) => {
+        this.dismissLoading();
+        this.showResults('/api/okay/face', res.data);
+    }).catch((err) => {
+      console.log('here is an error');
+      console.log(err);
+      this.dismissLoading();
+    });
+
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
   }
@@ -164,23 +202,42 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayDocCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    const response = await fetch(`${BASE_URL}/api/okay/doc`, {
-      method : 'POST',
-      mode : 'no-cors',
-      body : JSON.stringify(
-        {
+    // const response = await fetch(`${BASE_URL}/api/okay/doc`, {
+    //   method : 'POST',
+    //   mode : 'no-cors',
+    //   body : JSON.stringify(
+    //     {
+    //       "journeyId":this.journeyID,
+    //       "type":"nonpassport",
+    //       "idImageBase64Image": this.frontImageURI,
+    //       "version": "7",
+    //       "docType":"mykad"
+    //     }
+    //   ),
+    //   headers : {'Content-Type' : 'application/json'}
+    // }).then((res) => { return res.json() });
+    // if(response == undefined){this.dismissLoading();return;}
+    // this.dismissLoading();
+    // this.showResults('/api/okay/doc', JSON.stringify(response));
+
+    this.http.post(`${BASE_URL}/api/okay/doc`,
+    {
           "journeyId":this.journeyID,
           "type":"nonpassport",
           "idImageBase64Image": this.frontImageURI,
           "version": "7",
           "docType":"mykad"
-        }
-      ),
-      headers : {'Content-Type' : 'application/json'}
-    }).then((res) => { return res.json() });
-    if(response == undefined){this.dismissLoading();return;}
-    this.dismissLoading();
-    this.showResults('/api/okay/doc', JSON.stringify(response));
+    },{
+      'Content-Type' : 'application/json'
+    }).then((res) => {
+        this.dismissLoading();
+        this.showResults('/api/okay/doc', res.data);
+    }).catch((err) => {
+      console.log('here is an error');
+      console.log(err);
+      this.dismissLoading();
+    });
+
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
   }
@@ -191,17 +248,31 @@ promptUploadMedia = async(cameraType, imageType) => {
   }
 
   callOkayScoreCardCentralizedAPI = async() => {
-    const response = await fetch(`${BASE_URL}/api/okay/scorecard`, {
-      method : 'POST',
-      mode : 'no-cors',
-      body : JSON.stringify({
+    // const response = await fetch(`${BASE_URL}/api/okay/scorecard`, {
+    //   method : 'POST',
+    //   mode : 'no-cors',
+    //   body : JSON.stringify({
+    //     journeyId : this.journeyID
+    //   }),
+    //   headers : {'Content-Type' : 'application/json'}
+    // }).then((res) => { return res.json() });
+    // if(response == undefined){this.dismissLoading();return;}
+    // this.scorecard = JSON.stringify(response);
+    // this.dismissLoading();
+
+    this.http.post(`${BASE_URL}/api/okay/scorecard`,
+    {
         journeyId : this.journeyID
-      }),
-      headers : {'Content-Type' : 'application/json'}
-    }).then((res) => { return res.json() });
-    if(response == undefined){this.dismissLoading();return;}
-    this.scorecard = JSON.stringify(response);
-    this.dismissLoading();
+    },{
+      'Content-Type' : 'application/json'
+    }).then((res) => {
+        this.dismissLoading();
+        this.showResults('/api/okay/scorecard', res.data);
+    }).catch((err) => {
+      console.log('here is an error');
+      console.log(err);
+      this.dismissLoading();
+    });
   }
 
    presentLoading = async() => {
