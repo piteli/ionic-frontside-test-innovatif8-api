@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
 import { ModalWebcamComponent } from '../modal-webcam/modal-webcam.component';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 
-const BASE_URL = "https://test-gist.herokuapp.com";
+const BASE_URL = "http://www.pnmb.com.my/Kopten/Innovatif8";
 
 @Component({
   selector: 'app-home',
@@ -118,6 +118,7 @@ promptUploadMedia = async(cameraType, imageType) => {
     this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/id`, {
       method : 'POST',
+      mode : 'no-cors',
       body : JSON.stringify(
         {
           "journeyId": this.journeyID,
@@ -142,6 +143,7 @@ promptUploadMedia = async(cameraType, imageType) => {
     this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/face`, {
       method : 'POST',
+      mode : 'no-cors',
       body : JSON.stringify(
         {
           "journeyId": this.journeyID,
@@ -164,6 +166,7 @@ promptUploadMedia = async(cameraType, imageType) => {
     this.closeModalWebcam();
     const response = await fetch(`${BASE_URL}/api/okay/doc`, {
       method : 'POST',
+      mode : 'no-cors',
       body : JSON.stringify(
         {
           "journeyId":this.journeyID,
@@ -190,6 +193,7 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayScoreCardCentralizedAPI = async() => {
     const response = await fetch(`${BASE_URL}/api/okay/scorecard`, {
       method : 'POST',
+      mode : 'no-cors',
       body : JSON.stringify({
         journeyId : this.journeyID
       }),

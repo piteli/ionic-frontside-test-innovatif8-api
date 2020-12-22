@@ -11,6 +11,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { Camera } from '@ionic-native/camera/ngx';
 import {WebcamModule} from 'ngx-webcam';
 import { ModalWebcamComponent } from './modal-webcam/modal-webcam.component';
+import { HTTP } from '@ionic-native/http/ngx';
 
 @NgModule({
   declarations: [AppComponent, ModalWebcamComponent],
@@ -20,6 +21,7 @@ import { ModalWebcamComponent } from './modal-webcam/modal-webcam.component';
     StatusBar,
     SplashScreen,
     Camera,
+    HTTP,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
