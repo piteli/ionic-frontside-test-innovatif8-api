@@ -18,14 +18,15 @@ export class AppComponent {
     private statusBar: StatusBar,
     private http: HTTP
   ) {
+    this.http.setDataSerializer('json'); 
     this.initializeApp();
-    this.getJourneyID();
   }
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      this.getJourneyID();
     });
   }
 
@@ -49,14 +50,12 @@ export class AppComponent {
     //   console.log(err);
     // })
 
-    this.http.setDataSerializer('json'); 
     this.http.post('http://www.pnmb.com.my/Kopten/Innovatif8/api/okay/getJourneyId',
     {
       username : "pnmb_test",
       password : "Pnmb123@"
     },{
-      'Content-Type' : 'application/json',
-      'Accept' : 'application/json'
+      'Content-Type' : 'application/json'
     }).then((res) => {
       const json = JSON.parse(res.data);
       localStorage.setItem('journeyId', json.journeyId);

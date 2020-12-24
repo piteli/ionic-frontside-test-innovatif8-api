@@ -45,19 +45,39 @@ export class HomePage {
                 public modalController: ModalController,
                 private http: HTTP) {
     this.http.setDataSerializer('json'); 
-    this.loadJourneyID();
+    
     this.platforms = this.platform.platforms();
     if(this.platforms.includes('iphone') || this.platforms.includes('android')) this.platformDevice = 'mobile';
     else this.platformDevice = 'web';
+    this.platform.ready().then(() => {
+        this.loadJourneyID();
+    }).catch((err) => console.log(err));
   }
 
   loadJourneyID = () => {
       const journeyStorage = localStorage.getItem('journeyId');
-    if( journeyStorage == undefined){
-      this.loadAgain();
+    if( journeyStorage == undefined || journeyStorage == null){
+      this.newCreateJourneyID();
       return;
     }
     this.journeyID = journeyStorage;
+  }
+
+  newCreateJourneyID = () => {
+    this.http.post(`${BASE_URL}/api/okay/getJourneyId`,
+    {
+      username : "pnmb_test",
+      password : "Pnmb123@"
+    },{
+      'Content-Type' : 'application/json'
+    }).then((res) => {
+      const json = JSON.parse(res.data);
+      localStorage.setItem('journeyId', json.journeyId);
+      this.journeyID = json.journeyId;
+    }).catch((err) => {
+      console.log('here is an error');
+      console.log(err);
+    });
   }
   
   loadAgain = () => {
@@ -94,7 +114,7 @@ promptUploadMedia = async(cameraType, imageType) => {
 
   loadCamera = (cameraType, imageType, pictureSourceType) => {
     const options: CameraOptions = {
-      quality: 100,
+      quality: 50,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
