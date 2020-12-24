@@ -10,7 +10,7 @@ import { ModalWebcamComponent } from '../modal-webcam/modal-webcam.component';
 import {WebcamImage, WebcamInitError, WebcamUtil} from 'ngx-webcam';
 import { HTTP } from '@ionic-native/http/ngx'; 
 
-const BASE_URL = "http://www.pnmb.com.my/Kopten/Innovatif8";
+const BASE_URL = "";
 
 @Component({
   selector: 'app-home',

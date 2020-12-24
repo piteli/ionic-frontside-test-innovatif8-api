@@ -50,7 +50,7 @@ export class AppComponent {
     //   console.log(err);
     // })
 
-    this.http.post('http://www.pnmb.com.my/Kopten/Innovatif8/api/okay/get-journey-id',
+    this.http.post('/api/okay/get-journey-id',
     {
       username : "pnmb_test",
       password : "Pnmb123@"
