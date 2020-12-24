@@ -64,20 +64,27 @@ export class HomePage {
   }
 
   newCreateJourneyID = () => {
-    this.http.post(`${BASE_URL}/api/okay/getJourneyId`,
+
+    fetch('/api/okay/get-journey-id',
     {
-      username : "pnmb_test",
-      password : "Pnmb123@"
-    },{
-      'Content-Type' : 'application/json'
-    }).then((res) => {
-      const json = JSON.parse(res.data);
-      localStorage.setItem('journeyId', json.journeyId);
-      this.journeyID = json.journeyId;
+      method : 'POST',
+      body : JSON.stringify({
+        username : "pnmb_test",
+        password : "Pnmb123@"
+      }),
+      headers : {
+        'Content-Type' : 'application/json'
+      }
+    }).then((res) => res.json()).then((res) => {
+      console.log('success');
+      console.log(res);
+      localStorage.setItem('journeyId', res.journeyId);
+      this.journeyID = res.journeyId;
     }).catch((err) => {
       console.log('here is an error');
       console.log(err);
-    });
+    })
+
   }
   
   loadAgain = () => {
@@ -139,40 +146,43 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayIDCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    // const response = await fetch(`${BASE_URL}/api/okay/id`, {
-    //   method : 'POST',
-    //   mode : 'no-cors',
-    //   body : JSON.stringify(
-    //     {
-    //       "journeyId": this.journeyID,
-    //       "base64ImageString": this.frontImageURI,
-    //       "backImage": this.backImageURI,
-    //       "imageEnabled":false,
-    //       "faceImageEnabled":false,
-    //       "cambodia":false
-    //   }
-    //   ),
-    //   headers : {'Content-Type' : 'application/json'}
-    // }).then((res) => { return res.json() });
+    const response = await fetch(`${BASE_URL}/api/okay/id`, {
+      method : 'POST',
+      body : JSON.stringify(
+        {
+          "journeyId": this.journeyID,
+          "base64ImageString": this.frontImageURI,
+          "backImage": this.backImageURI,
+          "imageEnabled":false,
+          "faceImageEnabled":false,
+          "cambodia":false
+      }
+      ),
+      headers : {'Content-Type' : 'application/json'}
+    }).then((res) => { return res.json() });
+    if(response === undefined) {this.dismissLoading();return;}
+    this.dismissLoading();
+    this.showResults('/api/okay/id', JSON.stringify(response));
 
-    this.http.post(`${BASE_URL}/api/okay/id`,
-    {
-        "journeyId": this.journeyID,
-        "base64ImageString": this.frontImageURI,
-        "backImage": this.backImageURI,
-        "imageEnabled":false,
-        "faceImageEnabled":false,
-        "cambodia":false
-    },{
-      'Content-Type' : 'application/json'
-    }).then((res) => {
-        this.dismissLoading();
-        this.showResults('/api/okay/id', res.data);
-    }).catch((err) => {
-      console.log('here is an error');
-      console.log(err);
-      this.dismissLoading();
-    });
+
+    // this.http.post(`${BASE_URL}/api/okay/id`,
+    // {
+    //     "journeyId": this.journeyID,
+    //     "base64ImageString": this.frontImageURI,
+    //     "backImage": this.backImageURI,
+    //     "imageEnabled":false,
+    //     "faceImageEnabled":false,
+    //     "cambodia":false
+    // },{
+    //   'Content-Type' : 'application/json'
+    // }).then((res) => {
+    //     this.dismissLoading();
+    //     this.showResults('/api/okay/id', res.data);
+    // }).catch((err) => {
+    //   console.log('here is an error');
+    //   console.log(err);
+    //   this.dismissLoading();
+    // });
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
   }
@@ -180,40 +190,39 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayFaceCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    // const response = await fetch(`${BASE_URL}/api/okay/face`, {
-    //   method : 'POST',
-    //   mode : 'no-cors',
-    //   body : JSON.stringify(
-    //     {
-    //       "journeyId": this.journeyID,
-    //       "livenessDetection" : "true",
-    //       "imageBestBase64" : this.frontFaceImageURI,
-    //       "imageIdCardBase64" : this.frontImageURI
-    //   }
-    //   ),
-    //   headers : {'Content-Type' : 'application/json'}
-    // }).then((res) => { return res.json() });
-    // if(response == undefined){this.dismissLoading();return;}
-    // this.dismissLoading();
-    // this.showResults('/api/okay/face', JSON.stringify(response));
-
-
-    this.http.post(`${BASE_URL}/api/okay/face`,
-    {
+    const response = await fetch(`${BASE_URL}/api/okay/face`, {
+      method : 'POST',
+      body : JSON.stringify(
+        {
           "journeyId": this.journeyID,
           "livenessDetection" : "true",
           "imageBestBase64" : this.frontFaceImageURI,
           "imageIdCardBase64" : this.frontImageURI
-    },{
-      'Content-Type' : 'application/json'
-    }).then((res) => {
-        this.dismissLoading();
-        this.showResults('/api/okay/face', res.data);
-    }).catch((err) => {
-      console.log('here is an error');
-      console.log(err);
-      this.dismissLoading();
-    });
+      }
+      ),
+      headers : {'Content-Type' : 'application/json'}
+    }).then((res) => { return res.json() });
+    if(response == undefined){this.dismissLoading();return;}
+    this.dismissLoading();
+    this.showResults('/api/okay/face', JSON.stringify(response));
+
+
+    // this.http.post(`${BASE_URL}/api/okay/face`,
+    // {
+    //       "journeyId": this.journeyID,
+    //       "livenessDetection" : "true",
+    //       "imageBestBase64" : this.frontFaceImageURI,
+    //       "imageIdCardBase64" : this.frontImageURI
+    // },{
+    //   'Content-Type' : 'application/json'
+    // }).then((res) => {
+    //     this.dismissLoading();
+    //     this.showResults('/api/okay/face', res.data);
+    // }).catch((err) => {
+    //   console.log('here is an error');
+    //   console.log(err);
+    //   this.dismissLoading();
+    // });
 
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
@@ -222,41 +231,40 @@ promptUploadMedia = async(cameraType, imageType) => {
   callOkayDocCentralizedAPI = async() => {
     this.presentLoading();
     this.closeModalWebcam();
-    // const response = await fetch(`${BASE_URL}/api/okay/doc`, {
-    //   method : 'POST',
-    //   mode : 'no-cors',
-    //   body : JSON.stringify(
-    //     {
-    //       "journeyId":this.journeyID,
-    //       "type":"nonpassport",
-    //       "idImageBase64Image": this.frontImageURI,
-    //       "version": "7",
-    //       "docType":"mykad"
-    //     }
-    //   ),
-    //   headers : {'Content-Type' : 'application/json'}
-    // }).then((res) => { return res.json() });
-    // if(response == undefined){this.dismissLoading();return;}
-    // this.dismissLoading();
-    // this.showResults('/api/okay/doc', JSON.stringify(response));
-
-    this.http.post(`${BASE_URL}/api/okay/doc`,
-    {
+    const response = await fetch(`${BASE_URL}/api/okay/doc`, {
+      method : 'POST',
+      body : JSON.stringify(
+        {
           "journeyId":this.journeyID,
           "type":"nonpassport",
           "idImageBase64Image": this.frontImageURI,
           "version": "7",
           "docType":"mykad"
-    },{
-      'Content-Type' : 'application/json'
-    }).then((res) => {
-        this.dismissLoading();
-        this.showResults('/api/okay/doc', res.data);
-    }).catch((err) => {
-      console.log('here is an error');
-      console.log(err);
-      this.dismissLoading();
-    });
+        }
+      ),
+      headers : {'Content-Type' : 'application/json'}
+    }).then((res) => { return res.json() });
+    if(response == undefined){this.dismissLoading();return;}
+    this.dismissLoading();
+    this.showResults('/api/okay/doc', JSON.stringify(response));
+
+    // this.http.post(`${BASE_URL}/api/okay/doc`,
+    // {
+    //       "journeyId":this.journeyID,
+    //       "type":"nonpassport",
+    //       "idImageBase64Image": this.frontImageURI,
+    //       "version": "7",
+    //       "docType":"mykad"
+    // },{
+    //   'Content-Type' : 'application/json'
+    // }).then((res) => {
+    //     this.dismissLoading();
+    //     this.showResults('/api/okay/doc', res.data);
+    // }).catch((err) => {
+    //   console.log('here is an error');
+    //   console.log(err);
+    //   this.dismissLoading();
+    // });
 
     // if(response.status === 'success' && response.messageCode === 'api.success')
     // { this.slides.slideNext(); }
@@ -268,31 +276,31 @@ promptUploadMedia = async(cameraType, imageType) => {
   }
 
   callOkayScoreCardCentralizedAPI = async() => {
-    // const response = await fetch(`${BASE_URL}/api/okay/scorecard`, {
-    //   method : 'POST',
-    //   mode : 'no-cors',
-    //   body : JSON.stringify({
-    //     journeyId : this.journeyID
-    //   }),
-    //   headers : {'Content-Type' : 'application/json'}
-    // }).then((res) => { return res.json() });
-    // if(response == undefined){this.dismissLoading();return;}
-    // this.scorecard = JSON.stringify(response);
-    // this.dismissLoading();
-
-    this.http.post(`${BASE_URL}/api/okay/scorecard`,
-    {
+    const response = await fetch(`${BASE_URL}/api/okay/scorecard`, {
+      method : 'POST',
+      mode : 'no-cors',
+      body : JSON.stringify({
         journeyId : this.journeyID
-    },{
-      'Content-Type' : 'application/json'
-    }).then((res) => {
-        this.dismissLoading();
-        this.showResults('/api/okay/scorecard', res.data);
-    }).catch((err) => {
-      console.log('here is an error');
-      console.log(err);
-      this.dismissLoading();
-    });
+      }),
+      headers : {'Content-Type' : 'application/json'}
+    }).then((res) => { return res.json() });
+    if(response == undefined){this.dismissLoading();return;}
+    this.showResults('/api/okay/scorecard', JSON.stringify(response));
+    this.dismissLoading();
+
+    // this.http.post(`${BASE_URL}/api/okay/scorecard`,
+    // {
+    //     journeyId : this.journeyID
+    // },{
+    //   'Content-Type' : 'application/json'
+    // }).then((res) => {
+    //     this.dismissLoading();
+    //     this.showResults('/api/okay/scorecard', res.data);
+    // }).catch((err) => {
+    //   console.log('here is an error');
+    //   console.log(err);
+    //   this.dismissLoading();
+    // });
   }
 
    presentLoading = async() => {
